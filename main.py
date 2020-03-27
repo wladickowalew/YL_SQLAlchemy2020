@@ -2,14 +2,25 @@ from flask import Flask, render_template, redirect
 from data import db_session
 from data.users import User
 from data.news import News
+import data.news_resources as nr
 from Forms.registration import RegisterForm
 from Forms.login import LoginForm
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
+from flask_restful import reqparse, abort, Api, Resource
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+db_session.global_init("db/blogs.sqlite")
+nr.connect_db(db_session)
+api = Api(app)
+# для списка объектов
+api.add_resource(nr.NewsListResource, '/api/news') 
+
+# для одного объекта
+api.add_resource(nr.NewsResource, '/api/news/<int:news_id>')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -70,7 +81,6 @@ def logout():
 	return redirect("/")
 
 def main():
-	db_session.global_init("db/blogs.sqlite")
 	#for i in range(346):
 	#	addNews(f"News {i}", f"Content news {i}", i+1, False)
 
