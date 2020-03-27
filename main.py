@@ -84,7 +84,7 @@ def main():
 	#for i in range(346):
 	#	addNews(f"News {i}", f"Content news {i}", i+1, False)
 
-	app.run(port=8080, host='127.0.0.1')
+	app.run(port=80, host='127.0.0.1')
 
 def addUser(name, about, email):
 	user = User()
